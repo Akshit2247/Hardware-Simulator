@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hardware Simulator — PhET Interactive Circuit Lab & INStep Engine</title>
-  <meta name="description" content="PhET-accurate interactive circuit construction kit with microscopic 'See Inside Circuit' X-ray cutaways, electron drift dynamics, and INStep transient micro-stepping engine.">
+  <title>Hardware Simulator — Unified PhET Physics Suite & INStep Transient Engine</title>
+  <meta name="description" content="Complete PhET-accurate hardware simulation laboratory suite: Circuit Construction Kit, Faraday's Electromagnetics, Capacitor Lab, Wire Resistivity & Drude Model, Photoelectric Effect, Semiconductors & Diodes, and Radio Wave Antennas with microscopic X-ray cutaways and INStep micro-stepping transient engine.">
 
   <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,38 +15,37 @@
 </head>
 <body class="lab-workspace">
 
-  <!-- Main Simulator Layout -->
+  <!-- Main Simulator Layout Shell -->
   <div class="simulator-shell">
     
-    <!-- Minimal Top Control Bar -->
+    <!-- Primary Top Bar: Brand, Navigation & Transient Stepper Controls -->
     <header class="lab-header">
       <div class="header-left">
         <div class="brand">
           <span class="brand-icon">⚡</span>
           <span class="brand-title">Hardware<span class="highlight">Simulator</span></span>
-          <span class="lab-badge">PhET Physics</span>
+          <span class="lab-badge">PhET 7-in-1 Suite</span>
         </div>
       </div>
 
-      <!-- Central "See Inside Circuit" Controls -->
+      <!-- Central Contextual View Controls -->
       <div class="header-center">
-        <!-- View Mode (Real vs See Inside X-Ray vs Schematic) -->
-        <div class="segmented-control" title="Circuit Rendering View">
+        <!-- View Mode: Lifelike vs X-Ray vs Schematic -->
+        <div class="segmented-control" title="Rendering Mode" id="view-mode-control">
           <button class="seg-btn" data-view="real" id="view-real">Lifelike</button>
           <button class="seg-btn active" data-view="xray" id="view-xray">👁️ See Inside (X-Ray)</button>
           <button class="seg-btn" data-view="schematic" id="view-schematic">📐 Schematic</button>
         </div>
 
-        <!-- Current Flow Mode (Electrons vs Conventional) -->
-        <div class="segmented-control" title="Current Flow Display">
+        <!-- Current / Particle Flow Toggle -->
+        <div class="segmented-control" title="Charge Carrier Flow" id="flow-mode-control">
           <button class="seg-btn active" data-flow="electrons" id="flow-electrons">🔵 Electrons (e⁻)</button>
           <button class="seg-btn" data-flow="conventional" id="flow-conventional">🟠 Conventional (I)</button>
         </div>
       </div>
 
-      <!-- INStep & Time Controls -->
+      <!-- INStep Transient Engine Controls -->
       <div class="header-right">
-        <!-- Major INStep Feature Pill -->
         <div class="instep-control-pill">
           <button class="btn-instep-mode active" id="btn-mode-run" title="Continuous Real-time Run">
             <span>▶</span> Run
@@ -59,144 +58,477 @@
           </button>
         </div>
 
-        <button class="btn-tool" id="btn-presets" title="Preset Circuits">📂 Circuits</button>
-        <button class="btn-tool btn-clear" id="btn-clear" title="Clear Canvas">🧹 Clear</button>
+        <button class="btn-tool" id="btn-presets" title="Preset Laboratories">📂 Presets</button>
+        <button class="btn-tool btn-clear" id="btn-clear" title="Reset Current Laboratory">🧹 Reset</button>
       </div>
     </header>
 
-    <!-- Main Workspace: Canvas Stage + Component Drawer -->
+    <!-- Unified PhET Simulation Modules Ribbon -->
+    <nav class="lab-modules-bar" aria-label="Simulation Laboratories">
+      <button class="module-tab active" data-tab="circuit" id="tab-circuit">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-text">Circuit Lab</span>
+      </button>
+      <button class="module-tab" data-tab="faraday" id="tab-faraday">
+        <span class="tab-icon">🧲</span>
+        <span class="tab-text">Faraday Electromagnetics</span>
+      </button>
+      <button class="module-tab" data-tab="capacitor" id="tab-capacitor">
+        <span class="tab-icon">⫛</span>
+        <span class="tab-text">Capacitor Lab</span>
+      </button>
+      <button class="module-tab" data-tab="resistivity" id="tab-resistivity">
+        <span class="tab-icon">📏</span>
+        <span class="tab-text">Resistivity & Ohm's Law</span>
+      </button>
+      <button class="module-tab" data-tab="photoelectric" id="tab-photoelectric">
+        <span class="tab-icon">💡</span>
+        <span class="tab-text">Photoelectric Lab</span>
+      </button>
+      <button class="module-tab" data-tab="semiconductor" id="tab-semiconductor">
+        <span class="tab-icon">🔬</span>
+        <span class="tab-text">Semiconductor & Diode</span>
+      </button>
+      <button class="module-tab" data-tab="radiowaves" id="tab-radiowaves">
+        <span class="tab-icon">📡</span>
+        <span class="tab-text">Radio Waves Dipole</span>
+      </button>
+    </nav>
+
+    <!-- Main Body: Contextual Drawer + Canvas Stages + INStep Dashboard -->
     <div class="lab-body">
       
-      <!-- Minimalist Component Palette Drawer -->
-      <aside class="component-drawer">
-        <div class="drawer-title">COMPONENTS</div>
-        <div class="palette-grid">
-          <div class="palette-item" draggable="true" data-type="battery" title="DC Battery (Chemical Voltage Source)">
-            <div class="palette-icon icon-battery">🔋</div>
-            <span>Battery</span>
+      <!-- ================= 1. Dynamic Left Drawer ================= -->
+      <aside class="component-drawer" id="component-drawer">
+        
+        <!-- 1.1 Circuit Lab Drawer -->
+        <div class="drawer-panel active" id="drawer-circuit">
+          <div class="drawer-title">COMPONENTS</div>
+          <div class="palette-grid">
+            <div class="palette-item" draggable="true" data-type="battery" title="DC Battery (Chemical Voltage Source)">
+              <div class="palette-icon icon-battery">🔋</div>
+              <span>Battery</span>
+            </div>
+            <div class="palette-item" draggable="true" data-type="bulb" title="Incandescent Light Bulb (Tungsten Filament)">
+              <div class="palette-icon icon-bulb">💡</div>
+              <span>Light Bulb</span>
+            </div>
+            <div class="palette-item" draggable="true" data-type="resistor" title="Carbon Resistor (Lattice Dissipation)">
+              <div class="palette-icon icon-resistor">⚡</div>
+              <span>Resistor</span>
+            </div>
+            <div class="palette-item" draggable="true" data-type="switch" title="Knife Switch">
+              <div class="palette-icon icon-switch">🔌</div>
+              <span>Switch</span>
+            </div>
+            <div class="palette-item" draggable="true" data-type="capacitor" title="Parallel Plate Capacitor">
+              <div class="palette-icon icon-cap">⫛</div>
+              <span>Capacitor</span>
+            </div>
+            <div class="palette-item" draggable="true" data-type="wire" title="Copper Wire (Zero Resistance)">
+              <div class="palette-icon icon-wire">〰️</div>
+              <span>Wire</span>
+            </div>
           </div>
-          <div class="palette-item" draggable="true" data-type="bulb" title="Incandescent Light Bulb (Tungsten Filament)">
-            <div class="palette-icon icon-bulb">💡</div>
-            <span>Light Bulb</span>
-          </div>
-          <div class="palette-item" draggable="true" data-type="resistor" title="Carbon Resistor (Lattice Dissipation)">
-            <div class="palette-icon icon-resistor">⚡</div>
-            <span>Resistor</span>
-          </div>
-          <div class="palette-item" draggable="true" data-type="switch" title="Knife Switch">
-            <div class="palette-icon icon-switch">🔌</div>
-            <span>Switch</span>
-          </div>
-          <div class="palette-item" draggable="true" data-type="capacitor" title="Parallel Plate Capacitor">
-            <div class="palette-icon icon-cap">⫛</div>
-            <span>Capacitor</span>
-          </div>
-          <div class="palette-item" draggable="true" data-type="wire" title="Copper Wire (Zero Resistance)">
-            <div class="palette-icon icon-wire">〰️</div>
-            <span>Wire</span>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">METERS</div>
+          <div class="palette-grid">
+            <div class="palette-item" id="tool-voltmeter-toggle" title="Draggable Dual-Probe Voltmeter">
+              <div class="palette-icon icon-meter">📟</div>
+              <span>Voltmeter</span>
+            </div>
+            <div class="palette-item" id="tool-ammeter-toggle" title="Non-Contact Sensor Ammeter">
+              <div class="palette-icon icon-ammeter">🎯</div>
+              <span>Ammeter</span>
+            </div>
           </div>
         </div>
 
-        <div class="drawer-divider"></div>
-        <div class="drawer-title">METERS</div>
-        <div class="palette-grid">
-          <div class="palette-item" id="tool-voltmeter-toggle" title="Draggable Dual-Probe Voltmeter">
-            <div class="palette-icon icon-meter">📟</div>
-            <span>Voltmeter</span>
+        <!-- 1.2 Faraday Lab Drawer -->
+        <div class="drawer-panel" id="drawer-faraday">
+          <div class="drawer-title">APPARATUS SELECTION</div>
+          <div class="drawer-select-group">
+            <button class="drawer-btn active" data-sub="pickup" id="faraday-sub-pickup">🧲 Bar Magnet & Coil</button>
+            <button class="drawer-btn" data-sub="electromagnet" id="faraday-sub-electromagnet">⚡ Electromagnet (DC/AC)</button>
+            <button class="drawer-btn" data-sub="transformer" id="faraday-sub-transformer">🔄 Transformer</button>
+            <button class="drawer-btn" data-sub="generator" id="faraday-sub-generator">💧 Water Turbine Generator</button>
           </div>
-          <div class="palette-item" id="tool-ammeter-toggle" title="Non-Contact Sensor Ammeter">
-            <div class="palette-icon icon-ammeter">🎯</div>
-            <span>Ammeter</span>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">COIL PARAMETERS</div>
+          <div class="param-row">
+            <label>Coil Turns (N):</label>
+            <div class="param-btn-group">
+              <button class="param-choice-btn" data-turns="1">1</button>
+              <button class="param-choice-btn" data-turns="2">2</button>
+              <button class="param-choice-btn active" data-turns="3">3</button>
+              <button class="param-choice-btn" data-turns="4">4</button>
+            </div>
+          </div>
+          <div class="param-row">
+            <label>Coil Radius:</label>
+            <input type="range" id="faraday-coil-area" min="30" max="80" value="55">
+            <span class="param-val" id="faraday-coil-area-val">55 mm</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">FIELD DISPLAY</div>
+          <div class="toggle-row">
+            <label for="faraday-show-bfield">Show B-Field Lines:</label>
+            <input type="checkbox" id="faraday-show-bfield" checked>
+          </div>
+          <div class="toggle-row">
+            <label for="faraday-show-compass">Show Compass Grid:</label>
+            <input type="checkbox" id="faraday-show-compass" checked>
           </div>
         </div>
+
+        <!-- 1.3 Capacitor Lab Drawer -->
+        <div class="drawer-panel" id="drawer-capacitor">
+          <div class="drawer-title">PLATE GEOMETRY</div>
+          <div class="param-row">
+            <label>Plate Separation (d):</label>
+            <input type="range" id="cap-plate-dist" min="2.0" max="10.0" step="0.5" value="5.0">
+            <span class="param-val" id="cap-plate-dist-val">5.0 mm</span>
+          </div>
+          <div class="param-row">
+            <label>Plate Area (A):</label>
+            <input type="range" id="cap-plate-area" min="100" max="400" step="10" value="200">
+            <span class="param-val" id="cap-plate-area-val">200 mm²</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">DIELECTRIC MATERIAL</div>
+          <div class="param-row">
+            <label>Substance (κ):</label>
+            <select id="cap-dielectric-select" class="dropdown-full">
+              <option value="1.0" selected>Vacuum (κ = 1.0)</option>
+              <option value="2.1">Teflon (κ = 2.1)</option>
+              <option value="3.5">Paper (κ = 3.5)</option>
+              <option value="5.0">Pyrex Glass (κ = 5.0)</option>
+              <option value="10.0">Strontium Titanate (κ = 10.0)</option>
+            </select>
+          </div>
+          <div class="param-row">
+            <label>Dielectric Insertion:</label>
+            <input type="range" id="cap-dielectric-insert" min="0" max="100" step="5" value="0">
+            <span class="param-val" id="cap-dielectric-insert-val">0 %</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">CIRCUIT ATTACHMENT</div>
+          <div class="param-btn-group full-width">
+            <button class="param-choice-btn active" id="cap-conn-battery">🔋 Battery</button>
+            <button class="param-choice-btn" id="cap-conn-open">⏸ Disconnect</button>
+            <button class="param-choice-btn" id="cap-conn-bulb">💡 Discharge Bulb</button>
+          </div>
+          <div class="param-row" style="margin-top: 10px;">
+            <label>Supply Voltage:</label>
+            <input type="range" id="cap-battery-v" min="-1.5" max="1.5" step="0.1" value="1.5">
+            <span class="param-val" id="cap-battery-v-val">+1.5 V</span>
+          </div>
+        </div>
+
+        <!-- 1.4 Resistivity Lab Drawer -->
+        <div class="drawer-panel" id="drawer-resistivity">
+          <div class="drawer-title">MATERIAL RESISTIVITY (ρ)</div>
+          <div class="param-row">
+            <label>Resistivity (ρ):</label>
+            <input type="range" id="res-rho" min="0.10" max="10.00" step="0.1" value="1.00">
+            <span class="param-val" id="res-rho-val">1.00 Ω·cm</span>
+          </div>
+          <div class="preset-links">
+            <button class="preset-pill" data-rho="0.17">Copper</button>
+            <button class="preset-pill" data-rho="1.00">Alloy</button>
+            <button class="preset-pill" data-rho="5.50">Tungsten</button>
+            <button class="preset-pill" data-rho="10.0">Nichrome</button>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">WIRE DIMENSIONS</div>
+          <div class="param-row">
+            <label>Length (L):</label>
+            <input type="range" id="res-length" min="1.0" max="20.0" step="0.5" value="10.0">
+            <span class="param-val" id="res-length-val">10.0 cm</span>
+          </div>
+          <div class="param-row">
+            <label>Area (A):</label>
+            <input type="range" id="res-area" min="1.0" max="15.0" step="0.5" value="5.0">
+            <span class="param-val" id="res-area-val">5.0 mm²</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">BATTERY SOURCE</div>
+          <div class="param-row">
+            <label>Voltage (V):</label>
+            <input type="range" id="res-voltage" min="0.1" max="9.0" step="0.1" value="4.5">
+            <span class="param-val" id="res-voltage-val">4.5 V</span>
+          </div>
+        </div>
+
+        <!-- 1.5 Photoelectric Lab Drawer -->
+        <div class="drawer-panel" id="drawer-photoelectric">
+          <div class="drawer-title">TARGET METAL CATHODE</div>
+          <div class="param-row">
+            <label>Target Material:</label>
+            <select id="pe-target-metal" class="dropdown-full">
+              <option value="sodium" data-wf="2.28" selected>Sodium (Na, Φ = 2.28 eV)</option>
+              <option value="calcium" data-wf="2.87">Calcium (Ca, Φ = 2.87 eV)</option>
+              <option value="zinc" data-wf="4.31">Zinc (Zn, Φ = 4.31 eV)</option>
+              <option value="copper" data-wf="4.70">Copper (Cu, Φ = 4.70 eV)</option>
+              <option value="platinum" data-wf="6.35">Platinum (Pt, Φ = 6.35 eV)</option>
+            </select>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">MONOCHROMATIC LIGHT SOURCE</div>
+          <div class="param-row">
+            <label>Wavelength (λ):</label>
+            <input type="range" id="pe-wavelength" min="200" max="800" step="5" value="400">
+            <span class="param-val" id="pe-wavelength-val">400 nm (UV/Violet)</span>
+          </div>
+          <!-- Wavelength Spectrum Visual Gradient -->
+          <div class="spectrum-bar" id="pe-spectrum-bar">
+            <div class="spectrum-cursor" id="pe-spectrum-cursor"></div>
+          </div>
+
+          <div class="param-row" style="margin-top: 10px;">
+            <label>Beam Intensity:</label>
+            <input type="range" id="pe-intensity" min="0" max="100" step="5" value="60">
+            <span class="param-val" id="pe-intensity-val">60 %</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">BIAS / STOPPING VOLTAGE</div>
+          <div class="param-row">
+            <label>Voltage (V_bias):</label>
+            <input type="range" id="pe-voltage" min="-8.0" max="8.0" step="0.2" value="0.0">
+            <span class="param-val" id="pe-voltage-val">0.00 V</span>
+          </div>
+        </div>
+
+        <!-- 1.6 Semiconductor & Diode Drawer -->
+        <div class="drawer-panel" id="drawer-semiconductor">
+          <div class="drawer-title">SEMICONDUCTOR JUNCTION</div>
+          <div class="param-row">
+            <label>Material:</label>
+            <select id="semi-material-select" class="dropdown-full">
+              <option value="si" selected>Silicon (Si, Eg = 1.12 eV, Vk ≈ 0.7V)</option>
+              <option value="ge">Germanium (Ge, Eg = 0.67 eV, Vk ≈ 0.3V)</option>
+              <option value="gaas">Gallium Arsenide (GaAs LED, Eg = 1.42 eV)</option>
+            </select>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">JUNCTION BIAS VOLTAGE</div>
+          <div class="param-row">
+            <label>Bias (V_bias):</label>
+            <input type="range" id="semi-bias" min="-3.0" max="1.5" step="0.05" value="0.0">
+            <span class="param-val" id="semi-bias-val">0.00 V (Zero Bias)</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">CRYSTAL TEMPERATURE</div>
+          <div class="param-row">
+            <label>Temperature (T):</label>
+            <input type="range" id="semi-temp" min="200" max="400" step="5" value="300">
+            <span class="param-val" id="semi-temp-val">300 K (27°C)</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">DOPING CONCENTRATION</div>
+          <div class="param-row">
+            <label>Acceptor / Donor (N):</label>
+            <input type="range" id="semi-doping" min="1" max="10" step="1" value="5">
+            <span class="param-val" id="semi-doping-val">5 × 10¹⁶ cm⁻³</span>
+          </div>
+        </div>
+
+        <!-- 1.7 Radio Waves Drawer -->
+        <div class="drawer-panel" id="drawer-radiowaves">
+          <div class="drawer-title">TRANSMITTER OSCILLATOR</div>
+          <div class="param-btn-group full-width">
+            <button class="param-choice-btn active" id="radio-mode-sine">Oscillate (AC)</button>
+            <button class="param-choice-btn" id="radio-mode-pulse">Pulse</button>
+            <button class="param-choice-btn" id="radio-mode-manual">Manual Drag</button>
+          </div>
+          <div class="param-row" style="margin-top: 10px;">
+            <label>Frequency (f):</label>
+            <input type="range" id="radio-freq" min="1.0" max="5.0" step="0.2" value="2.5">
+            <span class="param-val" id="radio-freq-val">2.5 MHz</span>
+          </div>
+          <div class="param-row">
+            <label>Transmitter Amplitude:</label>
+            <input type="range" id="radio-amplitude" min="10" max="100" step="5" value="70">
+            <span class="param-val" id="radio-amplitude-val">70 %</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">RECEIVER ANTENNA</div>
+          <div class="param-row">
+            <label>Antenna Distance (r):</label>
+            <input type="range" id="radio-distance" min="50" max="250" step="10" value="150">
+            <span class="param-val" id="radio-distance-val">150 m</span>
+          </div>
+
+          <div class="drawer-divider"></div>
+          <div class="drawer-title">FIELD DISPLAY</div>
+          <div class="toggle-row">
+            <label for="radio-show-efield">E-Field Vectors:</label>
+            <input type="checkbox" id="radio-show-efield" checked>
+          </div>
+          <div class="toggle-row">
+            <label for="radio-show-waves">Radiating Wavefronts:</label>
+            <input type="checkbox" id="radio-show-waves" checked>
+          </div>
+        </div>
+
       </aside>
 
-      <!-- Center Circuit Sandbox Canvas -->
+      <!-- ================= 2. Center Viewport Stages ================= -->
       <main class="canvas-viewport" id="canvas-viewport">
-        <!-- Interactive High-DPI Canvas -->
-        <canvas id="circuit-canvas"></canvas>
+        
+        <!-- 2.1 Stage: Circuit Lab Canvas & Instruments -->
+        <div class="lab-stage active" id="stage-circuit">
+          <canvas id="circuit-canvas"></canvas>
 
-        <!-- Virtual Voltmeter (Draggable with floating Red & Black Probes) -->
-        <div class="virtual-meter voltmeter-body" id="voltmeter-unit" style="display: none;">
-          <div class="meter-header">
-            <span>VOLTMETER</span>
-            <button class="meter-close" id="voltmeter-close">×</button>
-          </div>
-          <div class="meter-display">
-            <span class="meter-value" id="voltmeter-readout">0.00</span>
-            <span class="meter-unit">V</span>
-          </div>
-          <div class="meter-labels">
-            <span class="label-black">COM (-)</span>
-            <span class="label-red">V (+)</span>
-          </div>
-        </div>
-
-        <!-- Voltmeter Probes -->
-        <div class="probe probe-black" id="probe-black" style="display: none;" title="Negative Probe (Black)">
-          <div class="probe-tip"></div>
-          <span class="probe-tag">-</span>
-        </div>
-        <div class="probe probe-red" id="probe-red" style="display: none;" title="Positive Probe (Red)">
-          <div class="probe-tip"></div>
-          <span class="probe-tag">+</span>
-        </div>
-
-        <!-- Virtual Ammeter Sensor -->
-        <div class="virtual-meter ammeter-unit" id="ammeter-unit" style="display: none;">
-          <div class="meter-header">
-            <span>AMMETER</span>
-            <button class="meter-close" id="ammeter-close">×</button>
-          </div>
-          <div class="meter-display">
-            <span class="meter-value" id="ammeter-readout">0.000</span>
-            <span class="meter-unit">A</span>
-          </div>
-          <div class="ammeter-sensor-ring" id="ammeter-sensor-ring" title="Drag over any wire or component to read current">
-            <div class="crosshair-h"></div>
-            <div class="crosshair-v"></div>
-          </div>
-        </div>
-
-        <!-- Floating Component Property Editor Dialog -->
-        <div class="property-popup" id="property-popup" style="display: none;">
-          <div class="popup-title">
-            <span id="popup-comp-title">Resistor (R1)</span>
-            <button class="popup-close" id="popup-close">×</button>
-          </div>
-          <div class="popup-body">
-            <div class="slider-row">
-              <label id="popup-slider-label">Resistance:</label>
-              <input type="range" id="popup-slider" min="1" max="100" step="1" value="10">
-              <span class="slider-readout" id="popup-slider-val">10.0 Ω</span>
+          <!-- Virtual Voltmeter (Draggable with Red & Black Probes) -->
+          <div class="virtual-meter voltmeter-body" id="voltmeter-unit" style="display: none;">
+            <div class="meter-header">
+              <span>VOLTMETER</span>
+              <button class="meter-close" id="voltmeter-close">×</button>
             </div>
-            <div class="popup-stats" id="popup-stats">
-              <div>Current: <strong id="popup-stat-i">0.00 A</strong></div>
-              <div>Power: <strong id="popup-stat-p">0.00 W</strong></div>
+            <div class="meter-display">
+              <span class="meter-value" id="voltmeter-readout">0.00</span>
+              <span class="meter-unit">V</span>
             </div>
-            <div class="popup-actions">
-              <button class="btn-popup-delete" id="popup-delete">🗑️ Remove</button>
+            <div class="meter-labels">
+              <span class="label-black">COM (-)</span>
+              <span class="label-red">V (+)</span>
             </div>
+          </div>
+
+          <!-- Voltmeter Probes -->
+          <div class="probe probe-black" id="probe-black" style="display: none;" title="Negative Probe (Black)">
+            <div class="probe-tip"></div>
+            <span class="probe-tag">-</span>
+          </div>
+          <div class="probe probe-red" id="probe-red" style="display: none;" title="Positive Probe (Red)">
+            <div class="probe-tip"></div>
+            <span class="probe-tag">+</span>
+          </div>
+
+          <!-- Virtual Ammeter Sensor -->
+          <div class="virtual-meter ammeter-unit" id="ammeter-unit" style="display: none;">
+            <div class="meter-header">
+              <span>AMMETER</span>
+              <button class="meter-close" id="ammeter-close">×</button>
+            </div>
+            <div class="meter-display">
+              <span class="meter-value" id="ammeter-readout">0.000</span>
+              <span class="meter-unit">A</span>
+            </div>
+            <div class="ammeter-sensor-ring" id="ammeter-sensor-ring" title="Drag over any wire or component to read current">
+              <div class="crosshair-h"></div>
+              <div class="crosshair-v"></div>
+            </div>
+          </div>
+
+          <!-- Floating Property Editor Dialog -->
+          <div class="property-popup" id="property-popup" style="display: none;">
+            <div class="popup-title">
+              <span id="popup-comp-title">Resistor (R1)</span>
+              <button class="popup-close" id="popup-close">×</button>
+            </div>
+            <div class="popup-body">
+              <div class="slider-row">
+                <label id="popup-slider-label">Resistance:</label>
+                <input type="range" id="popup-slider" min="1" max="100" step="1" value="10">
+                <span class="slider-readout" id="popup-slider-val">10.0 Ω</span>
+              </div>
+              <div class="popup-stats" id="popup-stats">
+                <div>Current: <strong id="popup-stat-i">0.00 A</strong></div>
+                <div>Power: <strong id="popup-stat-p">0.00 W</strong></div>
+              </div>
+              <div class="popup-actions">
+                <button class="btn-popup-delete" id="popup-delete">🗑️ Remove</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2.2 Stage: Faraday Electromagnetics Canvas -->
+        <div class="lab-stage" id="stage-faraday">
+          <canvas id="faraday-canvas"></canvas>
+          <div class="canvas-hud" id="faraday-hud">
+            <span class="hud-item">Induction EMF: <strong id="faraday-hud-emf">0.00 V</strong></span>
+            <span class="hud-item">Flux (Φ): <strong id="faraday-hud-flux">0.00 Wb</strong></span>
+          </div>
+        </div>
+
+        <!-- 2.3 Stage: Capacitor Lab Canvas -->
+        <div class="lab-stage" id="stage-capacitor">
+          <canvas id="capacitor-canvas"></canvas>
+          <div class="canvas-hud" id="capacitor-hud">
+            <span class="hud-item">Capacitance: <strong id="cap-hud-c">0.35 pF</strong></span>
+            <span class="hud-item">Stored Energy: <strong id="cap-hud-u">0.40 pJ</strong></span>
+          </div>
+        </div>
+
+        <!-- 2.4 Stage: Resistivity Lab Canvas -->
+        <div class="lab-stage" id="stage-resistivity">
+          <canvas id="resistivity-canvas"></canvas>
+          <div class="canvas-hud" id="resistivity-hud">
+            <span class="hud-item">Resistance: <strong id="res-hud-r">2.00 Ω</strong></span>
+            <span class="hud-item">Current: <strong id="res-hud-i">2.25 A</strong></span>
+          </div>
+        </div>
+
+        <!-- 2.5 Stage: Photoelectric Lab Canvas -->
+        <div class="lab-stage" id="stage-photoelectric">
+          <canvas id="photoelectric-canvas"></canvas>
+          <div class="canvas-hud" id="photoelectric-hud">
+            <span class="hud-item">Photon Energy: <strong id="pe-hud-e">3.10 eV</strong></span>
+            <span class="hud-item">Photocurrent: <strong id="pe-hud-i">4.20 µA</strong></span>
+          </div>
+        </div>
+
+        <!-- 2.6 Stage: Semiconductor & Diode Canvas -->
+        <div class="lab-stage" id="stage-semiconductor">
+          <canvas id="semiconductor-canvas"></canvas>
+          <div class="canvas-hud" id="semiconductor-hud">
+            <span class="hud-item">Diode State: <strong id="semi-hud-state">Equilibrium</strong></span>
+            <span class="hud-item">Current: <strong id="semi-hud-i">0.00 mA</strong></span>
+          </div>
+        </div>
+
+        <!-- 2.7 Stage: Radio Waves Canvas -->
+        <div class="lab-stage" id="stage-radiowaves">
+          <canvas id="radiowaves-canvas"></canvas>
+          <div class="canvas-hud" id="radiowaves-hud">
+            <span class="hud-item">Wavelength (λ): <strong id="radio-hud-lambda">120.0 m</strong></span>
+            <span class="hud-item">Rx Signal: <strong id="radio-hud-rx">0.00 mV</strong></span>
           </div>
         </div>
 
       </main>
 
-      <!-- Right Side: ⭐ Major INStep Transient Dashboard & Microscopic Inspector -->
+      <!-- ================= 3. Right Sidebar: ⭐ Unified INStep Transient Dashboard ================= -->
       <aside class="instep-panel" id="instep-panel">
         <div class="panel-header">
           <div class="panel-title-wrap">
             <span class="panel-icon">🔬</span>
             <h3>INStep Engine</h3>
           </div>
-          <span class="instep-tag">Transient Solver</span>
+          <span class="instep-tag" id="instep-lab-tag">Circuit MNA</span>
         </div>
 
         <div class="instep-content">
           <!-- Step Telemetry Status -->
           <div class="telemetry-card">
             <div class="telemetry-row">
-              <span>Step Count:</span>
+              <span>Micro-Step Count:</span>
               <strong id="instep-step-count">#0</strong>
             </div>
             <div class="telemetry-row">
@@ -213,24 +545,24 @@
             </div>
           </div>
 
-          <!-- Microscopic "See Inside" Drude Physics -->
-          <div class="section-title">MICROSCOPIC IN-STEP PHYSICS</div>
-          <div class="telemetry-card">
+          <!-- Dynamic Lab-Specific Physics Telemetry -->
+          <div class="section-title" id="instep-telemetry-title">MICROSCOPIC IN-STEP PHYSICS</div>
+          <div class="telemetry-card" id="instep-dynamic-card">
             <div class="telemetry-row">
-              <span>Drude Drift Speed:</span>
-              <strong class="text-cyan" id="instep-drift-vel">0.00 µm/s</strong>
+              <span id="instep-metric-1-lbl">Drude Drift Speed:</span>
+              <strong class="text-cyan" id="instep-metric-1-val">0.00 µm/s</strong>
             </div>
             <div class="telemetry-row">
-              <span>Electron Flux (ΔQ):</span>
-              <strong id="instep-charge-flux">0.00 µC / step</strong>
+              <span id="instep-metric-2-lbl">Electron Flux (ΔQ):</span>
+              <strong id="instep-metric-2-val">0.00 µC / step</strong>
             </div>
             <div class="telemetry-row">
-              <span>Total Dissipation:</span>
-              <strong class="text-amber" id="instep-power">0.00 W</strong>
+              <span id="instep-metric-3-lbl">Total Dissipation:</span>
+              <strong class="text-amber" id="instep-metric-3-val">0.00 W</strong>
             </div>
             <div class="telemetry-row">
-              <span>KCL Node Residual:</span>
-              <strong class="text-green" id="instep-kcl">0.0000 A (Balanced)</strong>
+              <span id="instep-metric-4-lbl">KCL Node Residual:</span>
+              <strong class="text-green" id="instep-metric-4-val">0.0000 A (Balanced)</strong>
             </div>
           </div>
 
@@ -239,14 +571,14 @@
           <div class="waveform-box">
             <canvas id="waveform-canvas" width="220" height="90"></canvas>
             <div class="waveform-legend">
-              <span class="leg-item"><span class="dot-v"></span> Voltage (V)</span>
-              <span class="leg-item"><span class="dot-i"></span> Current (A)</span>
+              <span class="leg-item"><span class="dot-v"></span> <span id="waveform-leg-1">Trace 1</span></span>
+              <span class="leg-item"><span class="dot-i"></span> <span id="waveform-leg-2">Trace 2</span></span>
             </div>
           </div>
 
-          <!-- Cutaway Physics Explanation -->
-          <div class="section-title">SEE INSIDE CUTAWAY X-RAY</div>
-          <div class="cutaway-guide-box">
+          <!-- Contextual Cutaway & Theory Explanation -->
+          <div class="section-title" id="instep-theory-title">SEE INSIDE CUTAWAY X-RAY</div>
+          <div class="cutaway-guide-box" id="instep-theory-box">
             <div class="guide-item">
               <strong class="text-cyan">🔵 Blue Spheres:</strong> Drift electrons moving at $v_d = I / (neA)$.
             </div>
@@ -270,7 +602,7 @@
     <div class="modal-backdrop" id="modal-presets" style="display: none;">
       <div class="modal-card">
         <div class="modal-header">
-          <h3>Load Circuit Presets</h3>
+          <h3>Load Hardware Laboratory Presets</h3>
           <button class="modal-close" id="modal-presets-close">×</button>
         </div>
         <div class="presets-grid">
@@ -280,7 +612,7 @@
           </div>
           <div class="preset-card" data-preset="parallel_branches">
             <h4>Parallel Circuit</h4>
-            <p>9V Battery powering two independent light bulb branches. Verifies Kirchhoff's Current Law.</p>
+            <p>9V Battery powering two independent bulb branches. Verifies Kirchhoff's Current Law.</p>
           </div>
           <div class="preset-card" data-preset="rc_transient">
             <h4>RC Transient Charging</h4>
@@ -289,6 +621,14 @@
           <div class="preset-card" data-preset="short_circuit">
             <h4>Short Circuit (High Current)</h4>
             <p>Direct low-resistance bridge triggering high thermal current and battery warning.</p>
+          </div>
+          <div class="preset-card" data-preset="faraday_pickup">
+            <h4>Faraday: Induced Current</h4>
+            <p>Bar magnet oscillating through 4-turn copper solenoid illuminating center-zero galvanometer.</p>
+          </div>
+          <div class="preset-card" data-preset="photoelectric_threshold">
+            <h4>Photoelectric: Threshold Cutoff</h4>
+            <p>Sodium cathode illuminated across UV-to-visible boundary demonstrating photon quantum cutoff.</p>
           </div>
         </div>
       </div>

@@ -1,111 +1,166 @@
 # ⚡ Hardware Simulator
-> **PhET-Accurate Interactive Circuit Construction Kit & INStep™ Transient Micro-Stepping Engine**
+> **PhET-Accurate Unified Hardware Physics Suite & ⭐ INStep™ Transient Micro-Stepping Engine**
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-00d2ff.svg)](https://akshit2247.github.io/Hardware-Simulator/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PhET Physics](https://img.shields.io/badge/PhET-7--in--1_Suite-10b981.svg)](https://github.com/mleoking/PhET)
 
-**Hardware Simulator** is a high-fidelity circuit laboratory modeled directly after the **PhET Circuit Construction Kit**, engineered with a distraction-free, minimal UI and maximal physical functionality. It features microscopic **"See Inside the Circuit"** cutaways and the **⭐ INStep Engine** for cycle-by-cycle transient micro-stepping analysis.
+**Hardware Simulator** is a laboratory-grade, zero-dependency interactive hardware and electrodynamics simulation suite directly inspired by the core research of **PhET Interactive Simulations** ([mleoking/PhET](https://github.com/mleoking/PhET)).
 
----
-
-## 🚀 Live Interactive Simulator
-Experience the live web laboratory right in your browser (no installation required):  
-👉 **[https://akshit2247.github.io/Hardware-Simulator/](https://akshit2247.github.io/Hardware-Simulator/web)**
+Engineered from the ground up for extreme speed and visual clarity, Hardware Simulator replaces gigabytes of legacy Java/Swing/Piccolo bloat with a streamlined, ultra-fast HTML5 Canvas and mathematical physics engine. It features microscopic **"See Inside the Circuit"** X-ray cutaways and the **⭐ INStep Engine** for cycle-by-cycle transient micro-stepping analysis across all 7 hardware laboratories.
 
 ---
 
-## 🌟 Key Features
-
-### 1. 👁️ "See Inside the Circuit" (Microscopic X-Ray Cutaways)
-Unlike traditional circuit simulators that only display static schematics, Hardware Simulator lets you peer inside components to watch the fundamental physics in real time:
-- **🔋 DC Battery (Chemical Pump)**: Visualizes the internal chemical potential mechanism that separates ions and forces electrons to climb "uphill" against electrostatic Coulomb repulsion.
-- **💡 Light Bulb (Tungsten Filament)**: Simulates the incandescent coil heating up and radiating photon wave vectors with dynamic luminous intensity governed by $P = V \cdot I$.
-- **⚡ Carbon Resistor (Drude Lattice Scattering)**: Displays the atomic lattice ions vibrating violently as drifting electrons collide, dissipating energy as Joule heat.
-- **⫛ Parallel Plate Capacitor (Dielectric E-Field)**: Illustrates electric field flux lines $\vec{E}$ bridging the plates as positive $+Q$ and negative $-Q$ surface charges accumulate.
-
-### 2. ⭐ The INStep Engine (Transient Micro-Stepping)
-The **INStep (Interactive Numerical Step)** engine provides laboratory-grade transient analysis:
-- **Cycle-by-Cycle Stepping**: Freeze simulation time and advance by discrete micro-steps ($\Delta t = 0.1\,\text{ms}$, $1.0\,\text{ms}$, or $10.0\,\text{ms}$).
-- **Drude Drift Speed**: Computes actual physical electron drift velocities in copper conductors ($v_d = \frac{I}{n \cdot e \cdot A} \approx 26.437\,\mu\text{m/s}$ per Ampere).
-- **Instantaneous Charge Flux**: Tracks charge transport per discrete micro-step ($\Delta Q = I \cdot \Delta t$).
-- **Kirchhoff's Current Law (KCL) Verification**: Verifies algebraic nodal current equilibrium $\sum I_k = 0$ at every junction down to machine epsilon ($10^{-12}\,\text{A}$).
-- **Transient Waveform Monitor**: Real-time dual-trace oscilloscope visualizing voltage and current transients across switching and charging events.
-
-### 3. 🛠️ Minimal UI with Maximal Functionality
-- **Segmented View Toggles**: Instantly switch between **Lifelike** (tactile 3D components), **👁️ See Inside (X-Ray)**, and **📐 Schematic** (standard IEEE symbols).
-- **Current Flow Modes**: Toggle between realistic **🔵 Electrons ($\mathbf{e^-}$)** and classical **🟠 Conventional Current ($I$)**.
-- **Virtual Laboratory Instruments**:
-  - **Voltmeter**: Draggable digital multimeter with floating flexible red $(+)$ and black $(-)$ test leads.
-  - **Ammeter**: Non-contact magnetic sensor ring that reads branch current anywhere it hovers.
-- **In-Place Property Tuning**: Click any component to reveal an inline tuner to dynamically adjust resistance ($1 - 100\,\Omega$), voltage ($1 - 36\,\text{V}$), or capacitance.
-- **Interactive Wire Drafting**: Click and drag from any terminal to easily route connections.
-- **Curated Lab Presets**:
-  - *Simple Series Circuit* (Battery + Bulb + Knife Switch)
-  - *Parallel Circuit* (Multi-branch KCL current divider)
-  - *RC Transient Circuit* (Exponential charging and dielectric saturation)
-  - *Short Circuit* (Low-resistance loop with battery warning)
+## 🚀 Live Interactive Laboratory
+Experience the live laboratory directly in your browser (no plugins or installation required):  
+👉 **[https://akshit2247.github.io/Hardware-Simulator/](https://akshit2247.github.io/Hardware-Simulator/)** *(or [Direct /web mirror](https://akshit2247.github.io/Hardware-Simulator/web))*
 
 ---
 
-## 🔬 Mathematical Physics: Modified Nodal Analysis (MNA)
-Hardware Simulator solves arbitrary circuits using Modified Nodal Analysis:
-$$\begin{bmatrix} \mathbf{G} & \mathbf{B} \\ \mathbf{C} & \mathbf{D} \end{bmatrix} \begin{bmatrix} \mathbf{v} \\ \mathbf{j} \end{bmatrix} = \begin{bmatrix} \mathbf{i} \\ \mathbf{e} \end{bmatrix}$$
-- $\mathbf{G}$: Conductance matrix formulated from resistors, lamps, and closed switches.
-- $\mathbf{B}, \mathbf{C}$: Incidence matrices representing independent ideal voltage sources.
-- **Capacitors**: Solved transiently using companion Norton equivalent conductances $G_{\text{eq}} = \frac{2C}{\Delta t}$ and history current sources $I_{\text{eq}}$.
+## 🏛️ The 7-in-1 PhET Hardware Suite
+
+Hardware Simulator unifies all electrical, magnetic, solid-state, and quantum hardware simulations into one cohesive workbench:
+
+```
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                          ⚡ HARDWARE SIMULATOR SUITE                           │
+├─────────────┬─────────────┬─────────────┬─────────────┬───────────┬───────────┤
+│  ⚡ CIRCUIT  │  🧲 FARADAY │ ⫛ CAPACITOR │ 📏 RESIST.  │  💡 PHOTO │ 🔬 SEMI.  │
+│  MNA Solver │  Induction  │  Dielectric │ Drude Model │  Phototub.│ P-N Diode │
+└─────────────┴─────────────┴─────────────┴─────────────┴───────────┴───────────┘
+```
+
+### 1. ⚡ Circuit Construction Kit (`circuit-construction-kit`)
+- **MNA Physics**: Solves linear circuit networks ($A \cdot x = z$) with batteries, resistors, incandescent lamps, capacitors, switches, and zero-resistance wires.
+- **Microscopic Drude Drift**: Visualizes blue drift electrons moving at $v_d = \frac{I}{n \cdot e \cdot A} \approx 26.437\,\mu\text{m/s}$ per Ampere.
+- **Segmented Views**: Instant toggle between **Lifelike** (tactile 3D components), **👁️ See Inside (X-Ray)**, and **📐 Schematic** (IEEE symbols).
+- **Virtual Instruments**: Floating dual-probe digital multimeter and non-contact magnetic ammeter.
+
+### 2. 🧲 Faraday's Electromagnetics Lab (`faraday`)
+- **Faraday & Lenz Induction**: Computes magnetic flux $\Phi_B = \vec{B} \cdot \vec{A}$ and induced electromotive force:
+  $$\mathcal{E} = -N \frac{d\Phi_B}{dt}$$
+- **4 Apparatus Modes**:
+  1. *Bar Magnet & Pickup Coil*: Move permanent dipole through $N = 1, 2, 3, 4$ coil turns to deflect galvanometer.
+  2. *Electromagnet (DC/AC)*: Solenoid with variable DC or sinusoidal AC excitation ($\sin(\omega t)$).
+  3. *Transformer*: Inductive coupling and mutual inductance between primary and secondary windings.
+  4. *Water Turbine Generator*: Hydro-powered rotor spinning magnetic dipole to generate clean AC sine wave.
+
+### 3. ⫛ Capacitor Lab (`capacitor-lab`)
+- **Adjustable Parallel Plates**: Variable plate area $A$ ($100 - 400\,\text{mm}^2$) and separation $d$ ($2 - 10\,\text{mm}$).
+- **Insertable Dielectrics**: Vacuum ($\kappa=1.0$), Teflon ($\kappa=2.1$), Paper ($\kappa=3.5$), Pyrex Glass ($\kappa=5.0$), and Strontium Titanate ($\kappa=10.0$).
+- **Electrostatic Field & Energy**:
+  $$C = \kappa \frac{\epsilon_0 A}{d}, \quad Q = C \cdot V, \quad U = \frac{1}{2} C V^2, \quad E = \frac{V}{d}$$
+- **Discharge Circuit**: Switch between DC charging battery and light bulb for exponential RC decay $V(t) = V_0 e^{-t/RC}$.
+
+### 4. 📏 Wire Resistivity & Drude Model (`resistance-in-a-wire`)
+- **Conductor Geometry**: Dynamically scales wire length $L$ ($1 - 20\,\text{cm}$) and cross-sectional area $A$ ($1 - 15\,\text{mm}^2$):
+  $$R = \rho \frac{L}{A}$$
+- **Drude Lattice Scattering**: Real-time atomic impurity scatterers with collision frequency $f_{\text{coll}} = 1/\tau$, mean free path $\lambda$, and Joule dissipation waves ($P = I^2 R$).
+
+### 5. 💡 Photoelectric Phototube Lab (`photoelectric`)
+- **Quantum Mechanics & Work Function**: Monochromatic laser ($\lambda = 200 - 800\,\text{nm}$) illuminating target cathodes: Sodium ($\Phi = 2.28\,\text{eV}$), Calcium, Zinc, Copper, and Platinum.
+- **Einstein Photoelectric Equation**:
+  $$E_{\text{photon}} = \frac{hc}{\lambda}, \quad K_{\text{max}} = \max(0, E_{\text{photon}} - \Phi)$$
+- **Stopping Potential ($V_{\text{stop}}$)**: Reverse battery bias decelerating photoelectrons until photocurrent drops to zero.
+
+### 6. 🔬 Semiconductor & Diode Lab (`semiconductor`)
+- **P-N Junction Physics**: P-zone (Acceptors + holes) and N-zone (Donors + free electrons).
+- **Shockley Diode Equation**:
+  $$I = I_s \left( e^{\frac{q V}{n k_B T}} - 1 \right)$$
+- **Depletion Region & Bandgap**: Dynamic space-charge layer narrowing under forward bias and expanding under reverse bias; energy band bending ($E_c, E_v, E_F$) and photon radiation in Gallium Arsenide (LED) mode!
+
+### 7. 📡 Radio Waves & Dipole Lab (`radio-waves`)
+- **Oscillating Dipole Transmitter**: Driven electron oscillator emitting concentric electromagnetic waves traveling through space at $c = 3 \times 10^8\,\text{m/s}$.
+- **Receiver Antenna**: Pick-up electron experiencing forced oscillation with spatial phase lag $\tau = r / c$, feeding a real-time RF oscilloscope.
 
 ---
 
-## 🐍 Standalone Python Engine (`simulator.py`)
-A self-contained Python solver is included for command-line experiments, testing, and algorithmic verification:
+## ⭐ The INStep Engine (Transient Micro-Stepping)
+The **INStep (Interactive Numerical Step)** engine operates across all 7 laboratories:
+- **Freeze & Step**: Freeze real-time execution and step cycle-by-cycle ($\Delta t = 0.1\,\text{ms}$, $1.0\,\text{ms}$, $10.0\,\text{ms}$).
+- **Live Oscilloscope**: Dual-trace transient monitor logging voltage, current, flux, and wave phase in real time.
+- **Physical Verification**: Verifies Kirchhoff's Current Law ($\sum I_k = 0$), Lenz's Law polarity, and capacitor charge conservation.
+
+---
+
+## 🏛️ Lineage: Borrowed & Streamlined from mleoking/PhET
+This project distills core algorithms and physical models from [mleoking/PhET](https://github.com/mleoking/PhET):
+
+| PhET Original Module | Upstream Java Architecture | Hardware Simulator Streamlined Engine |
+|---|---|---|
+| `circuit-construction-kit` | `FastMNA.java`, `ObjectOrientedMNA.java` | Zero-dependency MNA matrix solver & Drude cutaways |
+| `faraday` | `FaradayModel.java`, `PickupCoilNode.java` | Real-time Faraday flux, Lenz needle, & turbine rotor |
+| `capacitor-lab` | `CapacitorModel.java`, `DielectricNode.java` | Interactive geometry plates, dielectric slab & RC discharge |
+| `battery-resistor-circuit` | `ResistorWireNode.java`, `DrudeModel.java` | Dynamic 3D wire geometry & Drude lattice scatterers |
+| `photoelectric` | `PhototubeNode.java`, `PhotonBeam.java` | Monochromatic spectrum laser & stopping potential kinematics |
+| `semiconductor` | `PNJunctionNode.java`, `EnergyBandModel.java` | Shockley conduction, depletion width & LED photon emission |
+| `radio-waves` | `DipoleAntennaNode.java`, `WaveGrid.java` | Dipole driver, EM wave propagation at $c$, & receiver antenna |
+
+### ✂️ What Was Streamlined & Removed:
+- **Removed 1.4+ GB of Legacy Bloat**: Replaced Java Swing, Piccolo2D scenegraphs, and heavy JAR dependencies (Jama, JDOM, Wicket) with pure HTML5 Canvas and JavaScript.
+- **Removed Grab Bag Novelty Objects**: Eliminated non-circuit novelties (dollar bills, dogs, erasers) to maintain a focused, high-precision engineering laboratory.
+- **Integrated INStep Transient Analysis**: Laboratory-grade discrete stepping and telemetry unified across all physics modules.
+
+---
+
+## 🐍 Standalone Python Physics Engine (`simulator.py`)
+A self-contained Python solver is included for verification and command-line experiments:
 
 ```bash
-# Run the Python MNA & INStep engine demo
 python simulator.py
 ```
 
 Sample output:
 ```text
-⚡ Hardware Simulator: MNA Physics & INStep Transient Engine
----------------------------------------------------------------
-🔬 Running INStep Micro-Stepping Analysis (10 steps @ dt=1ms)...
-  Step #01 | t=1.0ms | I=0.360A | P=3.24W | v_drift=26.437 µm/s | KCL Balanced: True
-  Step #02 | t=2.0ms | I=0.360A | P=3.24W | v_drift=26.437 µm/s | KCL Balanced: True
-  Step #03 | t=3.0ms | I=0.360A | P=3.24W | v_drift=26.437 µm/s | KCL Balanced: True
-...
-✅ Circuit Solved Successfully! Ready for Web PhET Interactive Lab.
+======================================================================
+⚡ Hardware Simulator: Unified PhET 7-in-1 Suite Verification
+======================================================================
+
+[1/7] Circuit Construction Kit (MNA Linear Solver):
+  ✓ 9V Source -> R1(10Ω) + L1(15Ω) in series:
+    Current: 0.360A | Req = 25.0Ω | Drude Drift: 9.52 µm/s
+
+[2/7] Faraday's Electromagnetics Lab:
+  ✓ 4-Turn Solenoid Pickup Coil (Speed = 0.25 m/s):
+    Flux: 0.095 mWb | dΦ/dt: -0.06 mWb/s | Induced EMF: 0.0002 V
+
+[3/7] Capacitor Lab (Parallel Plates & Dielectrics):
+  ✓ Paper Dielectric (κ=3.5), A=200mm², d=5mm:
+    Capacitance: 1.24 pF | Energy: 1.39 pJ | Field: 300.0 V/m
+
+[4/7] Resistivity & Drude Model:
+  ✓ Copper Conductor (L=10cm, A=2mm²):
+    R: 0.000850 Ω | Mean Free Path: 3200.0 nm
+
+[5/7] Photoelectric Phototube Lab:
+  ✓ Sodium Cathode (Φ=2.28 eV) with 350 nm UV Laser:
+    E_photon: 3.54 eV | K_max: 1.26 eV | Stopping V: 1.26 V
+
+[6/7] Semiconductor & Diode Lab:
+  ✓ GaAs LED (Eg=1.42 eV) under Forward Bias (1.9 V):
+    Current: 5.00 mA | Emission Wavelength: 873.1 nm (Infrared LED)
+
+[7/7] Radio Waves Dipole Lab:
+  ✓ 2.5 MHz Antenna (c = 3×10⁸ m/s) at r=150m:
+    Wavelength: 119.9 m | Propagation Delay: 500.3 ns
+
+======================================================================
+✅ All 7 PhET Hardware Laboratories Verified Successfully!
+======================================================================
 ```
 
 ---
 
-## 💻 Local Web Server
-To run the interactive web laboratory locally:
+## 💻 Local Execution
+To run the web application locally:
 
 ```bash
-# Start a local HTTP server
+# Start a local web server
 python -m http.server 8000 --directory web
 
 # Open in your browser
 http://localhost:8000
 ```
-
----
-
-## 🏛️ Lineage: Borrowed & Streamlined from mleoking/PhET
-This project directly borrows core algorithmic foundations from [mleoking/PhET](https://github.com/mleoking/PhET) (`circuit-construction-kit`), modernizing and optimizing the codebase:
-
-### 📥 What Was Borrowed & Ported:
-1. **`FastMNA.java` & `ObjectOrientedMNA.java`**: Matrix Modified Nodal Analysis formulations ($A \cdot x = z$), nodal conductance stamps, and independent voltage source submatrices.
-2. **`ResistorColors.java`**: Exact 4-band IEC color code calculation translating resistance $\Omega$ into dynamic color rings.
-3. **`BulbNode.java`**: Authentic bulb anatomy (teardrop dome, tungsten coil, 4-ridge threaded screw collar, radiant ray spikes).
-4. **`BatteryNode.java`**: Cylindrical cell anatomy, brass button terminal, and polarity indicators.
-5. **`FlameNode.java`**: Short-circuit flame particle system triggering dynamic fire when $|I| > 15\,\text{A}$.
-6. **`NonContactAmmeterNode.java` & `VoltmeterModel.java`**: Sensor crosshairs and flexible floating probe leads.
-
-### ✂️ What Was Streamlined & Removed:
-- **Removed 1.4+ GB of Legacy Bloat**: Replaced Java Swing, Piccolo2D scenegraphs, and heavy external JARs (Jama, Wicket, JDOM) with a single zero-dependency HTML5 Canvas engine.
-- **Removed Grab Bag Gimmicks**: Stripped non-circuit novelty objects (dollar bills, hand, dog, eraser) to maintain a pure, professional engineering lab.
-- **Removed XML Serialization Overhead**: Replaced complex XML serialization trees with instantaneous reactive state and curated lab presets.
-- **Integrated ⭐ INStep Engine**: Added real-time transient micro-stepping ($\Delta t$), Drude electron drift speeds ($v_d = I / neA$), and live dual-trace oscilloscope monitoring.
 
 ---
 
@@ -115,18 +170,21 @@ Hardware-Simulator/
 ├── .github/
 │   └── workflows/
 │       └── deploy-pages.yml     # Automated GitHub Pages CI/CD workflow
-├── docs/                        # Mirror build for GitHub Pages hosting
-├── web/
-│   ├── index.html               # PhET lab canvas & INStep dashboard
-│   ├── style.css                # Dark minimalist laboratory styling
-│   └── app.js                   # FastMNA solver, electron particle drift & PhET cutaways
-├── simulator.py                 # Pure Python MNA & INStep transient engine
-└── README.md                    # Documentation & physical theory
+├── docs/                        # Synchronized GitHub Pages build
+│   ├── index.html
+│   ├── style.css
+│   └── app.js
+├── web/                         # Core web laboratory application
+│   ├── index.html               # 7-in-1 PhET suite layout & INStep dashboard
+│   ├── style.css                # Polished dark theme laboratory styling
+│   └── app.js                   # Unified physics engines, stages & INStep solver
+├── simulator.py                 # Pure Python 7-in-1 mathematical verification suite
+└── README.md                    # Comprehensive documentation & physical lineage
 ```
 
 ---
 
 ## 📜 License & Acknowledgments
 - Based on algorithms and research from the **PhET Interactive Simulations** project at the University of Colorado Boulder and [mleoking/PhET](https://github.com/mleoking/PhET).
-- Hardware Simulator modifications and INStep Engine by [@Akshit2247](https://github.com/Akshit2247).
-- Released under MIT License.
+- Hardware Simulator suite & INStep Engine by [@Akshit2247](https://github.com/Akshit2247).
+- Released under the MIT License.
