@@ -223,3 +223,116 @@ input[type="range"] {
   line-height: 1.4;
   margin-top: 6px;
 }
+
+/* Tuner Bar (PhET Bottom Inspector) */
+.tuner-bar {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+  min-width: 360px;
+  max-width: 480px;
+}
+
+.tuner-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.tuner-icon {
+  font-size: 16px;
+}
+
+.tuner-label {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.tuner-val-badge {
+  margin-left: auto;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 2px 8px;
+  border-radius: 5px;
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.tuner-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tuner-controls input[type="range"] {
+  flex: 1;
+  margin-top: 0;
+}
+
+.tuner-small-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  width: 26px;
+  height: 26px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e293b;
+  transition: 0.1s;
+}
+
+.tuner-small-btn:hover {
+  background: #e2e8f0;
+}
+
+.tuner-action-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #1e293b;
+  transition: 0.1s;
+  white-space: nowrap;
+}
+
+.tuner-action-btn:hover {
+  background: #e2e8f0;
+}
+
+.tuner-del-btn {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #dc2626;
+  transition: 0.1s;
+}
+
+.tuner-del-btn:hover {
+  background: #fecaca;
+  transform: scale(1.05);
+}
+

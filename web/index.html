@@ -44,12 +44,33 @@
       <div class="side-title">PRESETS</div>
       <button class="preset-btn" data-preset="series">Series Circuit</button>
       <button class="preset-btn" data-preset="parallel">Parallel Circuit</button>
+      <hr>
+      <div class="side-title">ACTIONS</div>
+      <button id="btn-clear" class="tool-btn" style="color: #ef4444; border-color: #fca5a5;">🗑️ Clear Canvas</button>
     </aside>
 
     <!-- Center Canvas Stage -->
     <main class="canvas-wrap" id="canvas-wrap">
       <canvas id="sim-canvas"></canvas>
       <div class="hud" id="hud">Current: 0.00 A | Time: 0.0 ms</div>
+
+      <!-- PhET Component Tuner Bar -->
+      <div class="tuner-bar" id="tuner-bar" style="display: none;">
+        <div class="tuner-header">
+          <span class="tuner-icon" id="tuner-icon">🔋</span>
+          <span class="tuner-label" id="tuner-label">Battery</span>
+          <span class="tuner-val-badge" id="tuner-val-badge">9.0 V</span>
+        </div>
+        <div class="tuner-controls" id="tuner-controls">
+          <button id="tuner-btn-minus" class="tuner-small-btn" title="Decrease value">-</button>
+          <input type="range" id="tuner-slider" min="0" max="120" step="1" value="9">
+          <button id="tuner-btn-plus" class="tuner-small-btn" title="Increase value">+</button>
+          <button id="tuner-btn-flip" class="tuner-action-btn" title="Reverse Polarity">⇄ Reverse</button>
+          <button id="tuner-btn-toggle" class="tuner-action-btn" title="Toggle switch">Open / Close</button>
+          <button id="tuner-btn-split" class="tuner-action-btn" title="Split junction">✂️ Split</button>
+          <button id="tuner-btn-del" class="tuner-del-btn" title="Delete selected component">🗑️</button>
+        </div>
+      </div>
     </main>
 
     <!-- Right Controls Panel -->
