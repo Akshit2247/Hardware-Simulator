@@ -1,0 +1,751 @@
+/* ==========================================================================
+   Hardware Simulator — PhET Interactive Lab & INStep Engine Stylesheet
+   Minimalist UI • Maximal Functionality • Microscopic Physics Simulation
+   ========================================================================== */
+
+:root {
+  --bg-lab: #0b0d13;
+  --bg-surface: #13161f;
+  --bg-card: #1a1e2b;
+  --bg-card-hover: #222738;
+  --border-subtle: #242938;
+  --border-active: #3b435a;
+
+  --accent-cyan: #00d2ff;
+  --accent-blue: #3b82f6;
+  --accent-orange: #ff9100;
+  --accent-amber: #f59e0b;
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+  --accent-yellow: #facc15;
+
+  --text-main: #f1f5f9;
+  --text-muted: #8490a7;
+  --text-dark: #0f172a;
+
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.lab-workspace {
+  background-color: var(--bg-lab);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  user-select: none;
+}
+
+.simulator-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ================= Minimal Top Control Bar ================= */
+.lab-header {
+  height: 52px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: -0.3px;
+}
+
+.brand-icon {
+  font-size: 18px;
+}
+
+.brand-title .highlight {
+  color: var(--accent-cyan);
+}
+
+.lab-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-green);
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 2px 7px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Segmented Control Buttons */
+.segmented-control {
+  display: flex;
+  background-color: #0c0e14;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.seg-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.seg-btn:hover {
+  color: var(--text-main);
+}
+
+.seg-btn.active {
+  background-color: var(--bg-card);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* INStep Control Pill */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.instep-control-pill {
+  display: flex;
+  background-color: #0c0e14;
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  box-shadow: 0 0 14px rgba(0, 210, 255, 0.12);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.btn-instep-mode, .btn-instep-step {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s;
+}
+
+.btn-instep-mode:hover, .btn-instep-step:hover:not(:disabled) {
+  color: #fff;
+}
+
+.btn-instep-mode.active {
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.25), rgba(59, 130, 246, 0.25));
+  border: 1px solid var(--accent-cyan);
+  color: #fff;
+}
+
+.btn-instep-step:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-tool {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-tool:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--border-active);
+}
+
+.btn-clear:hover {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
+/* ================= Workspace Layout ================= */
+.lab-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Component Palette Drawer */
+.component-drawer {
+  width: 140px;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  padding: 14px 10px;
+  gap: 10px;
+  overflow-y: auto;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.drawer-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+.palette-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.palette-item {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: grab;
+  transition: all 0.18s ease;
+}
+
+.palette-item:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--accent-cyan);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.palette-item:active {
+  cursor: grabbing;
+}
+
+.palette-icon {
+  font-size: 20px;
+}
+
+.palette-item span {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.drawer-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 6px 0;
+}
+
+/* Center Canvas Viewport */
+.canvas-viewport {
+  flex: 1;
+  position: relative;
+  background: #090a0f;
+  overflow: hidden;
+  cursor: default;
+}
+
+#circuit-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Virtual Meters (Voltmeter & Ammeter) */
+.virtual-meter {
+  position: absolute;
+  background-color: #f59e0b;
+  border: 3px solid #b45309;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  z-index: 80;
+  cursor: move;
+}
+
+.voltmeter-body {
+  width: 150px;
+  padding: 10px;
+  top: 30px;
+  right: 30px;
+}
+
+.meter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: #78350f;
+  margin-bottom: 6px;
+}
+
+.meter-close {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  color: #78350f;
+  cursor: pointer;
+}
+
+.meter-display {
+  background-color: #27272a;
+  border: 2px solid #18181b;
+  border-radius: 4px;
+  padding: 6px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.meter-value {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: #4ade80;
+}
+
+.meter-unit {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: #a1a1aa;
+}
+
+.meter-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.label-black { color: #18181b; }
+.label-red { color: #b91c1c; }
+
+/* Voltmeter Probes */
+.probe {
+  position: absolute;
+  width: 16px;
+  height: 48px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 4px;
+  cursor: grab;
+  z-index: 85;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+.probe-tip {
+  position: absolute;
+  top: -12px;
+  width: 3px;
+  height: 12px;
+  background-color: #d1d5db;
+  border-radius: 1px;
+}
+
+.probe-black {
+  background-color: #18181b;
+  border: 1px solid #3f3f46;
+  top: 130px;
+  right: 120px;
+}
+
+.probe-red {
+  background-color: #dc2626;
+  border: 1px solid #f87171;
+  top: 130px;
+  right: 50px;
+}
+
+.probe-tag {
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  font-family: var(--font-mono);
+}
+
+/* Ammeter Sensor */
+.ammeter-unit {
+  width: 140px;
+  padding: 8px;
+  background-color: #0284c7;
+  border-color: #0369a1;
+  top: 180px;
+  right: 30px;
+}
+
+.ammeter-unit .meter-header { color: #082f49; }
+.ammeter-unit .meter-close { color: #082f49; }
+
+.ammeter-sensor-ring {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 3px dashed #38bdf8;
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  background: rgba(56, 189, 248, 0.15);
+}
+
+.crosshair-h { width: 100%; height: 1px; background: rgba(56, 189, 248, 0.6); position: absolute; }
+.crosshair-v { height: 100%; width: 1px; background: rgba(56, 189, 248, 0.6); position: absolute; }
+
+/* Component Property Editor Popup */
+.property-popup {
+  position: absolute;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  padding: 12px 16px;
+  width: 230px;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.popup-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 6px;
+}
+
+.popup-close {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.slider-row input[type=range] {
+  width: 100%;
+  accent-color: var(--accent-cyan);
+}
+
+.slider-readout {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent-cyan);
+  text-align: right;
+}
+
+.popup-stats {
+  background: #0b0d13;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-popup-delete {
+  width: 100%;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--accent-red);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.btn-popup-delete:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
+
+/* ================= Right: ⭐ INStep Dashboard ================= */
+.instep-panel {
+  width: 280px;
+  background-color: var(--bg-surface);
+  border-left: 1px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.panel-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title-wrap h3 {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.instep-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  background: rgba(0, 210, 255, 0.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.instep-content {
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+}
+
+.telemetry-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.telemetry-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.telemetry-row strong {
+  font-family: var(--font-mono);
+  color: var(--text-main);
+}
+
+.dropdown-sm {
+  background: #0c0e14;
+  border: 1px solid var(--border-subtle);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.text-cyan { color: var(--accent-cyan) !important; }
+.text-amber { color: var(--accent-amber) !important; }
+.text-green { color: var(--accent-green) !important; }
+.text-red { color: var(--accent-red) !important; }
+.text-yellow { color: var(--accent-yellow) !important; }
+
+/* Waveform Canvas */
+.waveform-box {
+  background-color: #08090d;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#waveform-canvas {
+  width: 100%;
+  height: 80px;
+}
+
+.waveform-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.leg-item { display: flex; align-items: center; gap: 4px; }
+.dot-v { width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-cyan); }
+.dot-i { width: 6px; height: 6px; border-radius: 50%; background-color: var(--accent-orange); }
+
+/* Cutaway Guide Box */
+.cutaway-guide-box {
+  background-color: #090a0e;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide-item {
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* ================= Presets Modal ================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  width: 520px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.6);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 10px;
+}
+
+.modal-header h3 {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.presets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.preset-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.preset-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+}
+
+.preset-card h4 {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.preset-card p {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}

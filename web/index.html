@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardware Simulator — PhET Interactive Circuit Lab & INStep Engine</title>
+  <meta name="description" content="PhET-accurate interactive circuit construction kit with microscopic 'See Inside Circuit' X-ray cutaways, electron drift dynamics, and INStep transient micro-stepping engine.">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="lab-workspace">
+
+  <!-- Main Simulator Layout -->
+  <div class="simulator-shell">
+    
+    <!-- Minimal Top Control Bar -->
+    <header class="lab-header">
+      <div class="header-left">
+        <div class="brand">
+          <span class="brand-icon">⚡</span>
+          <span class="brand-title">Hardware<span class="highlight">Simulator</span></span>
+          <span class="lab-badge">PhET Physics</span>
+        </div>
+      </div>
+
+      <!-- Central "See Inside Circuit" Controls -->
+      <div class="header-center">
+        <!-- View Mode (Real vs See Inside X-Ray vs Schematic) -->
+        <div class="segmented-control" title="Circuit Rendering View">
+          <button class="seg-btn" data-view="real" id="view-real">Lifelike</button>
+          <button class="seg-btn active" data-view="xray" id="view-xray">👁️ See Inside (X-Ray)</button>
+          <button class="seg-btn" data-view="schematic" id="view-schematic">📐 Schematic</button>
+        </div>
+
+        <!-- Current Flow Mode (Electrons vs Conventional) -->
+        <div class="segmented-control" title="Current Flow Display">
+          <button class="seg-btn active" data-flow="electrons" id="flow-electrons">🔵 Electrons (e⁻)</button>
+          <button class="seg-btn" data-flow="conventional" id="flow-conventional">🟠 Conventional (I)</button>
+        </div>
+      </div>
+
+      <!-- INStep & Time Controls -->
+      <div class="header-right">
+        <!-- Major INStep Feature Pill -->
+        <div class="instep-control-pill">
+          <button class="btn-instep-mode active" id="btn-mode-run" title="Continuous Real-time Run">
+            <span>▶</span> Run
+          </button>
+          <button class="btn-instep-mode" id="btn-mode-instep" title="INStep Micro-stepping transient analysis">
+            <span>🔬</span> INStep
+          </button>
+          <button class="btn-instep-step" id="btn-instep-step" title="Advance by 1 micro-step (+Δt)" disabled>
+            <span>⏭</span> Step
+          </button>
+        </div>
+
+        <button class="btn-tool" id="btn-presets" title="Preset Circuits">📂 Circuits</button>
+        <button class="btn-tool btn-clear" id="btn-clear" title="Clear Canvas">🧹 Clear</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace: Canvas Stage + Component Drawer -->
+    <div class="lab-body">
+      
+      <!-- Minimalist Component Palette Drawer -->
+      <aside class="component-drawer">
+        <div class="drawer-title">COMPONENTS</div>
+        <div class="palette-grid">
+          <div class="palette-item" draggable="true" data-type="battery" title="DC Battery (Chemical Voltage Source)">
+            <div class="palette-icon icon-battery">🔋</div>
+            <span>Battery</span>
+          </div>
+          <div class="palette-item" draggable="true" data-type="bulb" title="Incandescent Light Bulb (Tungsten Filament)">
+            <div class="palette-icon icon-bulb">💡</div>
+            <span>Light Bulb</span>
+          </div>
+          <div class="palette-item" draggable="true" data-type="resistor" title="Carbon Resistor (Lattice Dissipation)">
+            <div class="palette-icon icon-resistor">⚡</div>
+            <span>Resistor</span>
+          </div>
+          <div class="palette-item" draggable="true" data-type="switch" title="Knife Switch">
+            <div class="palette-icon icon-switch">🔌</div>
+            <span>Switch</span>
+          </div>
+          <div class="palette-item" draggable="true" data-type="capacitor" title="Parallel Plate Capacitor">
+            <div class="palette-icon icon-cap">⫛</div>
+            <span>Capacitor</span>
+          </div>
+          <div class="palette-item" draggable="true" data-type="wire" title="Copper Wire (Zero Resistance)">
+            <div class="palette-icon icon-wire">〰️</div>
+            <span>Wire</span>
+          </div>
+        </div>
+
+        <div class="drawer-divider"></div>
+        <div class="drawer-title">METERS</div>
+        <div class="palette-grid">
+          <div class="palette-item" id="tool-voltmeter-toggle" title="Draggable Dual-Probe Voltmeter">
+            <div class="palette-icon icon-meter">📟</div>
+            <span>Voltmeter</span>
+          </div>
+          <div class="palette-item" id="tool-ammeter-toggle" title="Non-Contact Sensor Ammeter">
+            <div class="palette-icon icon-ammeter">🎯</div>
+            <span>Ammeter</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Circuit Sandbox Canvas -->
+      <main class="canvas-viewport" id="canvas-viewport">
+        <!-- Interactive High-DPI Canvas -->
+        <canvas id="circuit-canvas"></canvas>
+
+        <!-- Virtual Voltmeter (Draggable with floating Red & Black Probes) -->
+        <div class="virtual-meter voltmeter-body" id="voltmeter-unit" style="display: none;">
+          <div class="meter-header">
+            <span>VOLTMETER</span>
+            <button class="meter-close" id="voltmeter-close">×</button>
+          </div>
+          <div class="meter-display">
+            <span class="meter-value" id="voltmeter-readout">0.00</span>
+            <span class="meter-unit">V</span>
+          </div>
+          <div class="meter-labels">
+            <span class="label-black">COM (-)</span>
+            <span class="label-red">V (+)</span>
+          </div>
+        </div>
+
+        <!-- Voltmeter Probes -->
+        <div class="probe probe-black" id="probe-black" style="display: none;" title="Negative Probe (Black)">
+          <div class="probe-tip"></div>
+          <span class="probe-tag">-</span>
+        </div>
+        <div class="probe probe-red" id="probe-red" style="display: none;" title="Positive Probe (Red)">
+          <div class="probe-tip"></div>
+          <span class="probe-tag">+</span>
+        </div>
+
+        <!-- Virtual Ammeter Sensor -->
+        <div class="virtual-meter ammeter-unit" id="ammeter-unit" style="display: none;">
+          <div class="meter-header">
+            <span>AMMETER</span>
+            <button class="meter-close" id="ammeter-close">×</button>
+          </div>
+          <div class="meter-display">
+            <span class="meter-value" id="ammeter-readout">0.000</span>
+            <span class="meter-unit">A</span>
+          </div>
+          <div class="ammeter-sensor-ring" id="ammeter-sensor-ring" title="Drag over any wire or component to read current">
+            <div class="crosshair-h"></div>
+            <div class="crosshair-v"></div>
+          </div>
+        </div>
+
+        <!-- Floating Component Property Editor Dialog -->
+        <div class="property-popup" id="property-popup" style="display: none;">
+          <div class="popup-title">
+            <span id="popup-comp-title">Resistor (R1)</span>
+            <button class="popup-close" id="popup-close">×</button>
+          </div>
+          <div class="popup-body">
+            <div class="slider-row">
+              <label id="popup-slider-label">Resistance:</label>
+              <input type="range" id="popup-slider" min="1" max="100" step="1" value="10">
+              <span class="slider-readout" id="popup-slider-val">10.0 Ω</span>
+            </div>
+            <div class="popup-stats" id="popup-stats">
+              <div>Current: <strong id="popup-stat-i">0.00 A</strong></div>
+              <div>Power: <strong id="popup-stat-p">0.00 W</strong></div>
+            </div>
+            <div class="popup-actions">
+              <button class="btn-popup-delete" id="popup-delete">🗑️ Remove</button>
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- Right Side: ⭐ Major INStep Transient Dashboard & Microscopic Inspector -->
+      <aside class="instep-panel" id="instep-panel">
+        <div class="panel-header">
+          <div class="panel-title-wrap">
+            <span class="panel-icon">🔬</span>
+            <h3>INStep Engine</h3>
+          </div>
+          <span class="instep-tag">Transient Solver</span>
+        </div>
+
+        <div class="instep-content">
+          <!-- Step Telemetry Status -->
+          <div class="telemetry-card">
+            <div class="telemetry-row">
+              <span>Step Count:</span>
+              <strong id="instep-step-count">#0</strong>
+            </div>
+            <div class="telemetry-row">
+              <span>Physical Time (t):</span>
+              <strong id="instep-time-val">0.00 ms</strong>
+            </div>
+            <div class="telemetry-row">
+              <span>Time-Step (Δt):</span>
+              <select id="instep-dt-select" class="dropdown-sm">
+                <option value="0.0001">0.10 ms (High-Res)</option>
+                <option value="0.001" selected>1.00 ms (Standard)</option>
+                <option value="0.01">10.0 ms (Fast)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Microscopic "See Inside" Drude Physics -->
+          <div class="section-title">MICROSCOPIC IN-STEP PHYSICS</div>
+          <div class="telemetry-card">
+            <div class="telemetry-row">
+              <span>Drude Drift Speed:</span>
+              <strong class="text-cyan" id="instep-drift-vel">0.00 µm/s</strong>
+            </div>
+            <div class="telemetry-row">
+              <span>Electron Flux (ΔQ):</span>
+              <strong id="instep-charge-flux">0.00 µC / step</strong>
+            </div>
+            <div class="telemetry-row">
+              <span>Total Dissipation:</span>
+              <strong class="text-amber" id="instep-power">0.00 W</strong>
+            </div>
+            <div class="telemetry-row">
+              <span>KCL Node Residual:</span>
+              <strong class="text-green" id="instep-kcl">0.0000 A (Balanced)</strong>
+            </div>
+          </div>
+
+          <!-- Live INStep Waveform Transient Graph -->
+          <div class="section-title">TRANSIENT WAVEFORM MONITOR</div>
+          <div class="waveform-box">
+            <canvas id="waveform-canvas" width="220" height="90"></canvas>
+            <div class="waveform-legend">
+              <span class="leg-item"><span class="dot-v"></span> Voltage (V)</span>
+              <span class="leg-item"><span class="dot-i"></span> Current (A)</span>
+            </div>
+          </div>
+
+          <!-- Cutaway Physics Explanation -->
+          <div class="section-title">SEE INSIDE CUTAWAY X-RAY</div>
+          <div class="cutaway-guide-box">
+            <div class="guide-item">
+              <strong class="text-cyan">🔵 Blue Spheres:</strong> Drift electrons moving at $v_d = I / (neA)$.
+            </div>
+            <div class="guide-item">
+              <strong class="text-amber">💥 Resistor Lattice:</strong> Drude electron-phonon collisions dissipating $I^2 R$ heat.
+            </div>
+            <div class="guide-item">
+              <strong class="text-red">🔋 Battery Core:</strong> Chemical potential pumping electrons against Coulomb field.
+            </div>
+            <div class="guide-item">
+              <strong class="text-yellow">💡 Bulb Filament:</strong> Tungsten thermal radiance glowing with $P = V \cdot I$.
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Presets Modal -->
+    <div class="modal-backdrop" id="modal-presets" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Load Circuit Presets</h3>
+          <button class="modal-close" id="modal-presets-close">×</button>
+        </div>
+        <div class="presets-grid">
+          <div class="preset-card" data-preset="simple_series">
+            <h4>Simple Series Circuit</h4>
+            <p>9V Battery + Light Bulb + Knife Switch. Demonstrates complete conduction loop.</p>
+          </div>
+          <div class="preset-card" data-preset="parallel_branches">
+            <h4>Parallel Circuit</h4>
+            <p>9V Battery powering two independent light bulb branches. Verifies Kirchhoff's Current Law.</p>
+          </div>
+          <div class="preset-card" data-preset="rc_transient">
+            <h4>RC Transient Charging</h4>
+            <p>Battery + Resistor + Capacitor. Watch voltage exponential rise and INStep charge storage.</p>
+          </div>
+          <div class="preset-card" data-preset="short_circuit">
+            <h4>Short Circuit (High Current)</h4>
+            <p>Direct low-resistance bridge triggering high thermal current and battery warning.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
