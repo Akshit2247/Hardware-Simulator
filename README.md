@@ -1,7 +1,6 @@
 # ⚡ Hardware Simulator
 > **PhET-Accurate Interactive Circuit Construction Kit & INStep™ Transient Micro-Stepping Engine**
 
-[![Deploy to GitHub Pages](https://github.com/Akshit2247/Hardware-Simulator/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/Akshit2247/Hardware-Simulator/actions/workflows/deploy-pages.yml)
 [![Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-00d2ff.svg)](https://akshit2247.github.io/Hardware-Simulator/)
 
 **Hardware Simulator** is a high-fidelity circuit laboratory modeled directly after the **PhET Circuit Construction Kit**, engineered with a distraction-free, minimal UI and maximal physical functionality. It features microscopic **"See Inside the Circuit"** cutaways and the **⭐ INStep Engine** for cycle-by-cycle transient micro-stepping analysis.
