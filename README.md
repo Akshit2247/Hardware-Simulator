@@ -90,6 +90,25 @@ http://localhost:8000
 
 ---
 
+## 🏛️ Lineage: Borrowed & Streamlined from mleoking/PhET
+This project directly borrows core algorithmic foundations from [mleoking/PhET](https://github.com/mleoking/PhET) (`circuit-construction-kit`), modernizing and optimizing the codebase:
+
+### 📥 What Was Borrowed & Ported:
+1. **`FastMNA.java` & `ObjectOrientedMNA.java`**: Matrix Modified Nodal Analysis formulations ($A \cdot x = z$), nodal conductance stamps, and independent voltage source submatrices.
+2. **`ResistorColors.java`**: Exact 4-band IEC color code calculation translating resistance $\Omega$ into dynamic color rings.
+3. **`BulbNode.java`**: Authentic bulb anatomy (teardrop dome, tungsten coil, 4-ridge threaded screw collar, radiant ray spikes).
+4. **`BatteryNode.java`**: Cylindrical cell anatomy, brass button terminal, and polarity indicators.
+5. **`FlameNode.java`**: Short-circuit flame particle system triggering dynamic fire when $|I| > 15\,\text{A}$.
+6. **`NonContactAmmeterNode.java` & `VoltmeterModel.java`**: Sensor crosshairs and flexible floating probe leads.
+
+### ✂️ What Was Streamlined & Removed:
+- **Removed 1.4+ GB of Legacy Bloat**: Replaced Java Swing, Piccolo2D scenegraphs, and heavy external JARs (Jama, Wicket, JDOM) with a single zero-dependency HTML5 Canvas engine.
+- **Removed Grab Bag Gimmicks**: Stripped non-circuit novelty objects (dollar bills, hand, dog, eraser) to maintain a pure, professional engineering lab.
+- **Removed XML Serialization Overhead**: Replaced complex XML serialization trees with instantaneous reactive state and curated lab presets.
+- **Integrated ⭐ INStep Engine**: Added real-time transient micro-stepping ($\Delta t$), Drude electron drift speeds ($v_d = I / neA$), and live dual-trace oscilloscope monitoring.
+
+---
+
 ## 📁 Repository Structure
 ```
 Hardware-Simulator/
@@ -100,12 +119,14 @@ Hardware-Simulator/
 ├── web/
 │   ├── index.html               # PhET lab canvas & INStep dashboard
 │   ├── style.css                # Dark minimalist laboratory styling
-│   └── app.js                   # MNA solver, electron particle drift & cutaways
+│   └── app.js                   # FastMNA solver, electron particle drift & PhET cutaways
 ├── simulator.py                 # Pure Python MNA & INStep transient engine
 └── README.md                    # Documentation & physical theory
 ```
 
 ---
 
-## 📜 License
-MIT License. Built by [@Akshit2247](https://github.com/Akshit2247).
+## 📜 License & Acknowledgments
+- Based on algorithms and research from the **PhET Interactive Simulations** project at the University of Colorado Boulder and [mleoking/PhET](https://github.com/mleoking/PhET).
+- Hardware Simulator modifications and INStep Engine by [@Akshit2247](https://github.com/Akshit2247).
+- Released under MIT License.

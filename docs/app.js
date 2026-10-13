@@ -398,6 +398,9 @@ function renderLoop() {
   renderWires();
   renderComponents();
 
+  // PhET FlameNode short-circuit fire particle simulation
+  updateAndRenderFlames();
+
   // Render drafting wire (if user is dragging a wire)
   if (state.wireDraft) {
     ctx.strokeStyle = '#00d2ff';
@@ -476,79 +479,250 @@ function renderTerminal(t) {
   ctx.restore();
 }
 
-// ----------------- Lifelike PhET View -----------------
+// ----------------- Lifelike PhET View (Ported & Streamlined from mleoking/PhET) -----------------
+// Algorithm directly adapted from mleoking/PhET ResistorColors.java
+function getPhETResistorColors(val) {
+  const DIGIT_COLORS = [
+    '#000000', // 0 Black
+    '#8B4513', // 1 Brown
+    '#DC2626', // 2 Red
+    '#EA580C', // 3 Orange
+    '#EAB308', // 4 Yellow
+    '#16A34A', // 5 Green
+    '#2563EB', // 6 Blue
+    '#9333EA', // 7 Violet
+    '#6B7280', // 8 Gray
+    '#FFFFFF'  // 9 White
+  ];
+  const GOLD = '#D4AF37'; // 5% tolerance
+  const intVal = Math.max(1, Math.round(val));
+  if (intVal < 10) {
+    return [DIGIT_COLORS[0], DIGIT_COLORS[intVal], DIGIT_COLORS[0], GOLD];
+  } else if (intVal < 100) {
+    const d1 = Math.floor(intVal / 10);
+    const d2 = intVal % 10;
+    return [DIGIT_COLORS[d1], DIGIT_COLORS[d2], DIGIT_COLORS[0], GOLD];
+  } else {
+    const s = intVal.toString();
+    const d1 = parseInt(s[0], 10);
+    const d2 = parseInt(s[1], 10);
+    const factor = s.length - 2;
+    return [DIGIT_COLORS[d1], DIGIT_COLORS[d2], DIGIT_COLORS[Math.min(9, factor)], GOLD];
+  }
+}
+
+// PhET Flame particle system (FlameNode.java) for short circuits
+const flameParticles = [];
+function updateAndRenderFlames() {
+  for (const c of state.components) {
+    if (c instanceof WireConnection) continue;
+    if (Math.abs(c.current) > 15.0) {
+      for (let i = 0; i < 4; i++) {
+        flameParticles.push({
+          x: c.x + (Math.random() - 0.5) * (c.width * 0.8),
+          y: c.y + (Math.random() - 0.5) * 14,
+          vx: (Math.random() - 0.5) * 2,
+          vy: -Math.random() * 3.5 - 2,
+          size: Math.random() * 10 + 6,
+          life: 1.0,
+          decay: Math.random() * 0.04 + 0.03,
+          color: Math.random() > 0.4 ? '#f59e0b' : (Math.random() > 0.5 ? '#ef4444' : '#fef08a')
+        });
+      }
+    }
+  }
+
+  for (let i = flameParticles.length - 1; i >= 0; i--) {
+    const p = flameParticles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.size *= 0.95;
+    p.life -= p.decay;
+
+    if (p.life <= 0 || p.size < 1) {
+      flameParticles.splice(i, 1);
+      continue;
+    }
+
+    ctx.save();
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
 function renderLifelikeComponent(c) {
   const hw = c.width / 2;
   const hh = c.height / 2;
 
   if (c.type === 'battery') {
-    // Bronze & black cylindrical battery body
-    ctx.fillStyle = '#b45309';
-    ctx.fillRect(-hw, -hh, hw * 1.5, c.height);
-    ctx.fillStyle = '#18181b';
-    ctx.fillRect(hw * 0.5, -hh, hw * 0.5, c.height);
-    // Positive terminal cap
-    ctx.fillStyle = '#d1d5db';
-    ctx.fillRect(-hw - 6, -6, 6, 12);
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 11px sans-serif';
-    ctx.fillText(`${c.value}V`, -10, 4);
+    // PhET BatteryNode: Duracell style cylinder with brass positive knob
+    ctx.fillStyle = '#64748b';
+    ctx.fillRect(hw - 6, -hh, 6, c.height);
+
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(-hw + 26, -hh, c.width - 32, c.height);
+
+    const copperGrad = ctx.createLinearGradient(-hw, -hh, -hw + 26, hh);
+    copperGrad.addColorStop(0, '#d97706');
+    copperGrad.addColorStop(0.5, '#f59e0b');
+    copperGrad.addColorStop(1, '#b45309');
+    ctx.fillStyle = copperGrad;
+    ctx.fillRect(-hw, -hh, 26, c.height);
+
+    // Positive terminal button (knob)
+    ctx.fillStyle = '#fde047';
+    ctx.beginPath();
+    ctx.rect(-hw - 7, -7, 7, 14);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 10px monospace';
+    ctx.fillText('+', -hw + 8, 4);
+    ctx.fillText('-', hw - 14, 4);
+    ctx.font = 'bold 9px sans-serif';
+    ctx.fillText(`${c.value}V`, -6, 3);
 
   } else if (c.type === 'bulb') {
-    // Bulb filament and radiating glow
-    const isLit = Math.abs(c.current) > 0.05;
+    // PhET BulbNode: realistic glass dome, filament posts, screw base & brighties
     const power = Math.abs(c.current * c.voltageDrop);
+    const isLit = power > 0.05;
+
     if (isLit) {
-      const glowR = Math.min(80, 20 + power * 12);
-      const radGrad = ctx.createRadialGradient(0, -10, 5, 0, -10, glowR);
-      radGrad.addColorStop(0, 'rgba(253, 224, 71, 0.8)');
+      // 1. PhET Radiant glow halo
+      const glowR = Math.min(85, 25 + power * 10);
+      const radGrad = ctx.createRadialGradient(0, -14, 6, 0, -14, glowR);
+      radGrad.addColorStop(0, 'rgba(254, 240, 138, 0.85)');
+      radGrad.addColorStop(0.5, 'rgba(250, 204, 21, 0.35)');
       radGrad.addColorStop(1, 'transparent');
       ctx.fillStyle = radGrad;
       ctx.beginPath();
-      ctx.arc(0, -10, glowR, 0, Math.PI * 2);
+      ctx.arc(0, -14, glowR, 0, Math.PI * 2);
       ctx.fill();
+
+      // 2. PhET Radiant ray spikes ('brighties' in BulbNode.java)
+      const numRays = 12;
+      const rayLen = Math.min(65, 14 + power * 9);
+      ctx.strokeStyle = '#facc15';
+      ctx.lineWidth = Math.min(2.5, 1 + power * 0.2);
+      for (let i = 0; i < numRays; i++) {
+        const angle = (i * Math.PI * 2) / numRays;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle) * 22, -14 + Math.sin(angle) * 22);
+        ctx.lineTo(Math.cos(angle) * (22 + rayLen), -14 + Math.sin(angle) * (22 + rayLen));
+        ctx.stroke();
+      }
     }
-    // Bulb glass shell
-    ctx.fillStyle = isLit ? '#fef08a' : 'rgba(255,255,255,0.15)';
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 2;
+
+    // Glass bulb shell (dome)
+    ctx.fillStyle = isLit ? 'rgba(254, 240, 138, 0.92)' : 'rgba(255, 255, 255, 0.18)';
+    ctx.strokeStyle = isLit ? '#fde047' : '#94a3b8';
+    ctx.lineWidth = 1.8;
     ctx.beginPath();
-    ctx.arc(0, -10, 18, 0, Math.PI * 2);
+    ctx.arc(0, -14, 20, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    // Screw base
+
+    // Internal filament support posts & coil
+    ctx.strokeStyle = isLit ? '#fef08a' : '#64748b';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(-6, 4); ctx.lineTo(-4, -10);
+    ctx.moveTo(6, 4); ctx.lineTo(4, -10);
+    // Tungsten coil
+    ctx.moveTo(-4, -10);
+    for (let x = -4; x <= 4; x += 2) {
+      ctx.lineTo(x, -14 + (x % 4 === 0 ? -3 : 3));
+    }
+    ctx.lineTo(4, -10);
+    ctx.stroke();
+
+    // PhET threaded screw base collar with angled spiralLines
     ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(-8, 8, 16, 10);
+    ctx.fillRect(-9, 4, 18, 13);
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1.2;
+    for (let y = 7; y <= 15; y += 4) {
+      ctx.beginPath();
+      ctx.moveTo(-9, y); ctx.lineTo(9, y - 2);
+      ctx.stroke();
+    }
+
+    // Black ceramic insulator washer
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(-8, 17, 16, 3);
+
+    // Silver bottom solder terminal tip
+    ctx.fillStyle = '#cbd5e1';
+    ctx.beginPath();
+    ctx.arc(0, 21, 5, 0, Math.PI);
+    ctx.fill();
 
   } else if (c.type === 'resistor') {
-    // Beige ceramic body with 4 color bands
-    ctx.fillStyle = '#d97706';
-    ctx.fillRect(-hw, -hh + 6, c.width, c.height - 12);
-    // Bands
-    const bands = ['#b91c1c', '#15803d', '#ca8a04', '#eab308'];
-    bands.forEach((bCol, idx) => {
-      ctx.fillStyle = bCol;
-      ctx.fillRect(-hw + 18 + idx * 14, -hh + 6, 6, c.height - 12);
+    // PhET ResistorNode: bone-shaped ceramic body with dynamic 4-band color rings
+    const rBodyW = c.width - 20;
+    const rBodyH = c.height - 14;
+
+    ctx.fillStyle = '#d4a373';
+    ctx.strokeStyle = '#bc6c25';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(-rBodyW / 2, -rBodyH / 2, rBodyW, rBodyH, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    // Dynamic 4 color bands from PhET ResistorColors algorithm
+    const bands = getPhETResistorColors(c.value);
+    const bandPositions = [-18, -6, 6, 18];
+    bands.forEach((bColor, idx) => {
+      ctx.fillStyle = bColor;
+      ctx.fillRect(bandPositions[idx] - 2.5, -rBodyH / 2, 5, rBodyH);
     });
 
   } else if (c.type === 'switch') {
-    // Brass knife switch
-    ctx.fillStyle = '#64748b';
-    ctx.fillRect(-hw, -4, 12, 8);
-    ctx.fillRect(hw - 12, -4, 12, 8);
-    ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 4;
+    // PhET SwitchNode: knife switch with pivot hinge and contact clip
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(-hw, -5, 14, 10);
+    ctx.fillRect(hw - 14, -5, 14, 10);
+
+    ctx.fillStyle = '#f59e0b';
     ctx.beginPath();
-    ctx.moveTo(-hw + 6, 0);
-    if (c.isClosed) ctx.lineTo(hw - 6, 0);
-    else ctx.lineTo(hw - 12, -26);
+    ctx.arc(-hw + 7, 0, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = '#eab308';
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(-hw + 7, 0);
+    if (c.isClosed) {
+      ctx.lineTo(hw - 7, 0);
+    } else {
+      ctx.lineTo(hw - 14, -28);
+    }
     ctx.stroke();
 
+    if (!c.isClosed) {
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(hw - 18, -32, 7, 7);
+    }
+
   } else if (c.type === 'capacitor') {
-    // Parallel plates
+    // PhET CapacitorNode: parallel plates with dielectric
+    ctx.fillStyle = '#0284c7';
+    ctx.fillRect(-14, -hh, 6, c.height);
     ctx.fillStyle = '#38bdf8';
-    ctx.fillRect(-12, -hh, 6, c.height);
-    ctx.fillRect(6, -hh, 6, c.height);
+    ctx.fillRect(8, -hh, 6, c.height);
+
+    ctx.strokeStyle = '#0ea5e9';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 2]);
+    ctx.beginPath();
+    ctx.moveTo(-3, -hh); ctx.lineTo(-3, hh);
+    ctx.stroke();
+    ctx.setLineDash([]);
   }
 }
 

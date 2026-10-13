@@ -3,6 +3,7 @@ Hardware Simulator: Python Modified Nodal Analysis (MNA) & INStep Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PhET-accurate interactive circuit physics solver with micro-step transient
 analysis (INStep), electron drift dynamics, and Kirchhoff's Laws verification.
+Adapted & streamlined from PhET Circuit Construction Kit (mleoking/PhET, FastMNA & ResistorColors).
 
 Author: @Akshit2247
 """
@@ -11,6 +12,21 @@ import math
 import sys
 from dataclasses import dataclass, field
 from typing import List, Dict, Tuple, Optional
+
+
+def phet_resistor_colors(resistance: float) -> Tuple[str, str, str, str]:
+    """Port of PhET ResistorColors.java to compute 4-band IEC color codes."""
+    digit_names = ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Gray", "White"]
+    int_val = max(1, round(resistance))
+    if int_val < 10:
+        return (digit_names[0], digit_names[int_val], digit_names[0], "Gold (5%)")
+    elif int_val < 100:
+        return (digit_names[int_val // 10], digit_names[int_val % 10], digit_names[0], "Gold (5%)")
+    else:
+        s = str(int_val)
+        d1, d2 = int(s[0]), int(s[1])
+        factor = min(9, len(s) - 2)
+        return (digit_names[d1], digit_names[d2], digit_names[factor], "Gold (5%)")
 
 
 @dataclass
