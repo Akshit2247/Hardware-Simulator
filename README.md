@@ -9,7 +9,7 @@
 
 ## 🚀 Live Interactive Simulator
 Experience the live web laboratory right in your browser (no installation required):  
-👉 **[https://akshit2247.github.io/Hardware-Simulator/](https://akshit2247.github.io/Hardware-Simulator/)**
+👉 **[https://akshit2247.github.io/Hardware-Simulator/](https://akshit2247.github.io/Hardware-Simulator/web)**
 
 ---
 
