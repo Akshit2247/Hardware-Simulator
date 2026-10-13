@@ -1,11 +1,8 @@
 # ⚡ Hardware Simulator
-> **PhET-Accurate Unified Hardware Physics Suite & ⭐ INStep™ Transient Micro-Stepping Engine**
+> **PhET-Accurate Unified Hardware Physics Suite
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-00d2ff.svg)](https://akshit2247.github.io/Hardware-Simulator/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![PhET Physics](https://img.shields.io/badge/PhET-7--in--1_Suite-10b981.svg)](https://github.com/mleoking/PhET)
-
-**Hardware Simulator** is a laboratory-grade, zero-dependency interactive hardware and electrodynamics simulation suite directly inspired by the core research of **PhET Interactive Simulations** ([mleoking/PhET](https://github.com/mleoking/PhET)).
 
 Engineered from the ground up for extreme speed and visual clarity, Hardware Simulator replaces gigabytes of legacy Java/Swing/Piccolo bloat with a streamlined, ultra-fast HTML5 Canvas and mathematical physics engine. It features microscopic **"See Inside the Circuit"** X-ray cutaways and the **⭐ INStep Engine** for cycle-by-cycle transient micro-stepping analysis across all 7 hardware laboratories.
 
@@ -80,75 +77,6 @@ The **INStep (Interactive Numerical Step)** engine operates across all 7 laborat
 - **Freeze & Step**: Freeze real-time execution and step cycle-by-cycle ($\Delta t = 0.1\,\text{ms}$, $1.0\,\text{ms}$, $10.0\,\text{ms}$).
 - **Live Oscilloscope**: Dual-trace transient monitor logging voltage, current, flux, and wave phase in real time.
 - **Physical Verification**: Verifies Kirchhoff's Current Law ($\sum I_k = 0$), Lenz's Law polarity, and capacitor charge conservation.
-
----
-
-## 🏛️ Lineage: Borrowed & Streamlined from mleoking/PhET
-This project distills core algorithms and physical models from [mleoking/PhET](https://github.com/mleoking/PhET):
-
-| PhET Original Module | Upstream Java Architecture | Hardware Simulator Streamlined Engine |
-|---|---|---|
-| `circuit-construction-kit` | `FastMNA.java`, `ObjectOrientedMNA.java` | Zero-dependency MNA matrix solver & Drude cutaways |
-| `faraday` | `FaradayModel.java`, `PickupCoilNode.java` | Real-time Faraday flux, Lenz needle, & turbine rotor |
-| `capacitor-lab` | `CapacitorModel.java`, `DielectricNode.java` | Interactive geometry plates, dielectric slab & RC discharge |
-| `battery-resistor-circuit` | `ResistorWireNode.java`, `DrudeModel.java` | Dynamic 3D wire geometry & Drude lattice scatterers |
-| `photoelectric` | `PhototubeNode.java`, `PhotonBeam.java` | Monochromatic spectrum laser & stopping potential kinematics |
-| `semiconductor` | `PNJunctionNode.java`, `EnergyBandModel.java` | Shockley conduction, depletion width & LED photon emission |
-| `radio-waves` | `DipoleAntennaNode.java`, `WaveGrid.java` | Dipole driver, EM wave propagation at $c$, & receiver antenna |
-
-### ✂️ What Was Streamlined & Removed:
-- **Removed 1.4+ GB of Legacy Bloat**: Replaced Java Swing, Piccolo2D scenegraphs, and heavy JAR dependencies (Jama, JDOM, Wicket) with pure HTML5 Canvas and JavaScript.
-- **Removed Grab Bag Novelty Objects**: Eliminated non-circuit novelties (dollar bills, dogs, erasers) to maintain a focused, high-precision engineering laboratory.
-- **Integrated INStep Transient Analysis**: Laboratory-grade discrete stepping and telemetry unified across all physics modules.
-
----
-
-## 🐍 Standalone Python Physics Engine (`simulator.py`)
-A self-contained Python solver is included for verification and command-line experiments:
-
-```bash
-python simulator.py
-```
-
-Sample output:
-```text
-======================================================================
-⚡ Hardware Simulator: Unified PhET 7-in-1 Suite Verification
-======================================================================
-
-[1/7] Circuit Construction Kit (MNA Linear Solver):
-  ✓ 9V Source -> R1(10Ω) + L1(15Ω) in series:
-    Current: 0.360A | Req = 25.0Ω | Drude Drift: 9.52 µm/s
-
-[2/7] Faraday's Electromagnetics Lab:
-  ✓ 4-Turn Solenoid Pickup Coil (Speed = 0.25 m/s):
-    Flux: 0.095 mWb | dΦ/dt: -0.06 mWb/s | Induced EMF: 0.0002 V
-
-[3/7] Capacitor Lab (Parallel Plates & Dielectrics):
-  ✓ Paper Dielectric (κ=3.5), A=200mm², d=5mm:
-    Capacitance: 1.24 pF | Energy: 1.39 pJ | Field: 300.0 V/m
-
-[4/7] Resistivity & Drude Model:
-  ✓ Copper Conductor (L=10cm, A=2mm²):
-    R: 0.000850 Ω | Mean Free Path: 3200.0 nm
-
-[5/7] Photoelectric Phototube Lab:
-  ✓ Sodium Cathode (Φ=2.28 eV) with 350 nm UV Laser:
-    E_photon: 3.54 eV | K_max: 1.26 eV | Stopping V: 1.26 V
-
-[6/7] Semiconductor & Diode Lab:
-  ✓ GaAs LED (Eg=1.42 eV) under Forward Bias (1.9 V):
-    Current: 5.00 mA | Emission Wavelength: 873.1 nm (Infrared LED)
-
-[7/7] Radio Waves Dipole Lab:
-  ✓ 2.5 MHz Antenna (c = 3×10⁸ m/s) at r=150m:
-    Wavelength: 119.9 m | Propagation Delay: 500.3 ns
-
-======================================================================
-✅ All 7 PhET Hardware Laboratories Verified Successfully!
-======================================================================
-```
-
 ---
 
 ## 💻 Local Execution
@@ -185,6 +113,5 @@ Hardware-Simulator/
 ---
 
 ## 📜 License & Acknowledgments
-- Based on algorithms and research from the **PhET Interactive Simulations** project at the University of Colorado Boulder and [mleoking/PhET](https://github.com/mleoking/PhET).
 - Hardware Simulator suite & INStep Engine by [@Akshit2247](https://github.com/Akshit2247).
 - Released under the MIT License.
